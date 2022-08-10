@@ -5,17 +5,23 @@ const { generateJWT } = require('../helpers/jwt');
 const { validateToken } = require('../middleware/validate-jwt');
 
 const getUsers = async (req, res) => {
-  const users = await User.find({}, '');
+  const from = Number(req.query.from) || 0;
+  const [users, total] = await Promise.all([
+    User
+      .find({}, 'name email role google img')
+      .skip(from)
+      .limit(5),
+    User.countDocuments()
+  ]);
   res.json({
     ok: true,
     users,
-    uid: req.uid
+    total
   });
-}
+};
 
 const createUser = async (req, res = response) => {
   const { email, password } = req.body;
-
   try {
     const existEmail = await User.findOne({email});
     if(existEmail){
