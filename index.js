@@ -8,6 +8,9 @@ const cors = require('cors');
 //configure cors
 app.use(cors());
 
+//Folder public sever
+app.use( express.static('public') )
+
 //configure body parser
 app.use(express.json());
 
