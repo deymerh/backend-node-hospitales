@@ -1,8 +1,9 @@
 // Route: /api/login
 const { Router } = require('express');
 const { check } = require('express-validator');
-const { login, loginWithGoogle } = require('../controllers/auth.controller');
+const { login, loginWithGoogle, renewToken } = require('../controllers/auth.controller');
 const { validateFields } = require('../middleware/validate-fields');
+const { validateToken } = require('../middleware/validate-jwt');
 
 const router = Router();
 
@@ -22,5 +23,7 @@ router.post('/google',
   ],  
   (loginWithGoogle)
 );
+
+router.get('/renew', (validateToken), (renewToken));
 
 module.exports = router;
