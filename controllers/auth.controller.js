@@ -8,7 +8,7 @@ const login = async (req, res = response) => {
   const { email, password } = req.body;
   try {
     //Check email
-    const userDB = await User.findOne({email});
+    const userDB = await User.findOne({ email });
     if (!userDB) {
       return res.status(404).json({
         ok: false,
@@ -29,24 +29,24 @@ const login = async (req, res = response) => {
       ok: true,
       token
     })
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({
-        ok: false,
-        msg: 'Hable con el administrador'
-      });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: 'Hable con el administrador'
+    });
   }
 }
 
-const loginWithGoogle = async (req=request, res=response)=>{
+const loginWithGoogle = async (req = request, res = response) => {
   console.log(req.body.token);
   try {
     const { email, name, picture } = await verifyTokenGoogle(req.body.token);
-    
-    const userDB = await User.findOne({email});
-    
+
+    const userDB = await User.findOne({ email });
+
     let user;
-    if(!userDB){
+    if (!userDB) {
       user = new User({
         name,
         email,
@@ -54,7 +54,7 @@ const loginWithGoogle = async (req=request, res=response)=>{
         google: true,
         password: '@@@'
       });
-    }else{
+    } else {
       user = userDB;
       user.google = true;
     }
@@ -64,7 +64,7 @@ const loginWithGoogle = async (req=request, res=response)=>{
 
     // generate token
     const token = await generateJWT(user.id);
-    
+
     res.json({
       ok: true,
       user,
@@ -79,17 +79,17 @@ const loginWithGoogle = async (req=request, res=response)=>{
   }
 }
 
-const renewToken = async (req = request, res=response)=>{
+const renewToken = async (req = request, res = response) => {
 
   const uid = req.uid;
-
-  // generate token
+  const userDB = await User.findOne({ uid });
   const token = await generateJWT(uid);
 
   res.json({
     ok: true,
-    token
-  })
+    token,
+    userDB
+  });
 }
 
 module.exports = { login, loginWithGoogle, renewToken };
