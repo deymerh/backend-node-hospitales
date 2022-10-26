@@ -70,10 +70,10 @@ const returnPhoto = (req = request, res = response)=>{
   
   const type = req.params.type;
   const photo = req.params.photo;
-
   
+  const pathPhoto = path.join(__dirname, `../uploads/${type}/${photo}`);
+
   if (fs.existsSync(pathPhoto)) {
-    const pathPhoto = path.join(__dirname, `../uploads/${type}/${photo}`);
     res.sendFile(pathPhoto);
   }else{
     const pathPhoto = path.join(__dirname, `../uploads/no-image.jpg`);
